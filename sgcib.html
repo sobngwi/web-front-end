@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="riskApp">
+<head>
+    <title>Entities And Risks Sharing</title>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link href="bootstrap-theme.css" rel="stylesheet" />
+    <script src="angular.js"></script>
+    <script>
+        var riskApp = angular.module("riskApp", []);
+        var originess = [] ;
+        riskApp.controller("entityCtrl", function ($scope, $http, $log) {
+            $http.get("entities.json").then(function (response) {
+               $scope.entities = response.data;
+            }, function () {
+               $log.error("Request On error");
+            }).then(function () {
+            	$log.info("Entities Request Complete successfully");
+            });
+			
+			 $http.get("origine.json").then(function (response) {
+               $scope.origines = response.data;
+            }, function () {
+               $log.error("Request On error");
+            }).then(function () {
+            	$log.info("Origination Request Complete successfully : " );
+            });
+			
+			 $scope.addNewOrigine = function(originText) {
+			 $log.info("just selected to add : " + originText ) ;
+   			 }
+   			  
+   			  $scope.deleteOrigine = function(originText) {
+			  $log.info("just selected to delete : " + originText.toString() ) ;
+			  var tmpTab = $scope.origines ;
+			  $log.info("scope  length === " +  $scope.origines.length )
+			  for ( var indice = 0 ; indice < tmpTab.length ; indice++ ) {
+			  $log.info(" looking for [" + indice + "]  " + tmpTab[indice].origineName.toString() ) ;
+			  	if ( tmpTab[indice].origineName.toString() === originText.toString() ) {
+			  		$log.info(" Found element at position :  --> " + indice ) ; 
+			  		tmpTab.splice(indice, 1);
+			  		$log.info(" successfully removed " ) ;
+			  		$scope.origines = tmpTab;
+			  		$log.info("new scope  length === " +  $scope.origines.length )
+			  		return  ;
+			  	}
+			  	
+
+			  }
+				$log.error ( " the origin havent been found .....");
+			  
+			}
+			
+			
+			
+			
+			
+        });
+  
+    </script>
+</head>
+<body  ng-controller="entityCtrl">
+ <div>
+	<h3>Entities</h3>
+ </div>
+ 
+ <div class="panel">
+       
+        <table class="table table-hover">
+            <thead>
+                <tr style="background-color: LightGray;">
+                	<th style="font-size: 100%;height:10; ">Entities Name</th>
+                	<th>Percentage</th>
+                	<th> </th>
+                	<th>Levels</th>
+                </tr>
+             </thead>
+            <tbody>
+               <tr style="background-color: DarkGray;">
+                	<td width="50%">
+                		<label style="font-size: 90%;">Place of origination</label>
+                	</td>
+                	<td></td>
+                	<td></td>
+           	   </tr>
+           	   <tr>
+           	   	<td width="50%">
+           	 	
+            		<input list="origines" size="50"  ng-model="originText">
+ 						<datalist id="origines">
+ 							<option data-ng-repeat="origine in origines | orderBy:'origineName'" value="{{origine.origineName}}">
+				 		</datalist>
+			   		
+			   	</td> 
+			   		
+			   	<td></td>
+			   	<td width="5%"><button class="btn  btn-info" ng-click="deleteOrigine(originText)"  style="font-size: 75%;">X</button></td>
+			    </tr>
+			   <tr>
+			   		<td height="10"> 
+			   				 <button class="btn  btn-primary" ng-click="addNewOrigine(originText)" style="font-size: 75%;">Add</button>
+			   		</td>
+			   		<td></td>
+			   		<td></td> 
+			   		<td></td> 
+			   </tr>
+           	   <tr style="background-color: DarkGray;">
+                	<td width="50%">
+                		<label style="font-size: 90%;">Booking Entities</label>
+                	</td>
+                	<td></td>
+                	<td></td> 
+           	   </tr>
+				        	   
+           	   <tr style="height:10px;">
+           	   	<td width="50%">
+           	   	   <input list="entities" size="50">
+ 						<datalist id="entities">
+ 							<option  data-ng-repeat="entity in entities" value="{{entity.entityName}}">
+				 		</datalist>
+			   	</td>
+			   	<td><input size="3">%</input></td>
+			   	<td width="5%"><button class="btn  btn-info" style="font-size: 75%;">X</button></td>
+			   	<td></td> 
+			   </tr>
+			   <tr>
+			   		<td> 
+			   			<button class="btn  btn-primary" style="font-size: 75%;">Add</button>
+			   		</td> 
+			   		<td></td>
+			   		<td></td>
+			   		<td></td> 
+			   </tr>
+           	   
+        </table>
+        
+      </div>
+        <div>
+         <span>
+         <button class="btn  btn-primary">Duplicate Table</button>&nbsp; &nbsp; &nbsp;
+         <button class="btn  btn-primary">Delete Table</button> 
+         </span> 
+        </div>        		  
+ </div>
+
+</body>
+</html>
