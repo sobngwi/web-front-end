@@ -7,8 +7,9 @@
     <script src="angular.js"></script>
     <script>
         var riskApp = angular.module("riskApp", []);
-        var originess = [] ;
+
         riskApp.controller("entityCtrl", function ($scope, $http, $log) {
+        $scope.count = 0;
             $http.get("entities.json").then(function (response) {
                $scope.entities = response.data;
             }, function () {
@@ -16,19 +17,29 @@
             }).then(function () {
             	$log.info("Entities Request Complete successfully");
             });
-			
+
 			 $http.get("origine.json").then(function (response) {
-               $scope.origines = response.data;
+                 $scope.origines = response.data;
+                 if ( $scope.origines.length === 0 ) {
+                 	$log.error("length === 0") ;
+                 	var def = { origineName: "default"} ;
+                 	var def1 = { def0 : "toto" , def2 : { origineName: "default"},
+                 	def3 : def.origineName  } ;
+                 	$log.error("def1.def.origineName=== " + def1.def2.origineName) ;
+                 	$scope.origines.push( def);
+                 }
+
+                 $log.error("origines === " + origines) ;
             }, function () {
                $log.error("Request On error");
             }).then(function () {
             	$log.info("Origination Request Complete successfully : " );
             });
-			
+
 			 $scope.addNewOrigine = function(originText) {
 			 $log.info("just selected to add : " + originText ) ;
    			 }
-   			  
+
    			  $scope.deleteOrigine = function(originText) {
 			  $log.info("just selected to delete : " + originText.toString() ) ;
 			  var tmpTab = $scope.origines ;
@@ -36,35 +47,70 @@
 			  for ( var indice = 0 ; indice < tmpTab.length ; indice++ ) {
 			  $log.info(" looking for [" + indice + "]  " + tmpTab[indice].origineName.toString() ) ;
 			  	if ( tmpTab[indice].origineName.toString() === originText.toString() ) {
-			  		$log.info(" Found element at position :  --> " + indice ) ; 
+			  		$log.info(" Found element at position :  --> " + indice ) ;
 			  		tmpTab.splice(indice, 1);
 			  		$log.info(" successfully removed " ) ;
 			  		$scope.origines = tmpTab;
 			  		$log.info("new scope  length === " +  $scope.origines.length )
 			  		return  ;
 			  	}
-			  	
+
 
 			  }
 				$log.error ( " the origin havent been found .....");
-			  
+
 			}
-			
-			
-			
-			
-			
+
+
+
+
+
+
         });
-  
+
+riskApp.directive("addbuttonsbutton", function(){
+	return {
+		restrict: "E",
+		template: "<button addbuttons class='btn  btn-primary'  style='font-size: 75%;'>Add</button>"
+	}
+});
+
+riskApp.directive("addbuttons", function($compile){
+	return function(scope, element, attrs){
+		element.bind("click", function(){
+			scope.count++;
+			angular.element(
+			document.getElementById
+			('space-for-buttons')).append(
+			$compile("<div> <tr> <td width='50%'> <td><td width='5%'><input list='origines' size='50'   ng-model='originText' required>Delete  #"+scope.count+
+
+			"</td></td>" +
+			"<button class='btn  btn-info' ng-click='deleteOrigine(originText)'  style='font-size: 75%;'>X</button> " +  "</td></tr></div>")
+			(scope));
+		});
+	};
+});
+
+//Directive for showing an alert on click
+riskApp.directive("alert", function(){
+	return function(scope, element, attrs){
+		element.bind("click", function(){
+			console.log(attrs);
+			alert("This is alert #"+attrs.alert);
+		});
+	};
+});
+
+
     </script>
 </head>
 <body  ng-controller="entityCtrl">
  <div>
 	<h3>Entities</h3>
  </div>
- 
+
  <div class="panel">
-       
+
         <table class="table table-hover">
             <thead>
                 <tr style="background-color: LightGray;">
@@ -84,33 +130,38 @@
            	   </tr>
            	   <tr>
            	   	<td width="50%">
-           	 	
+
             		<input list="origines" size="50"  ng-model="originText">
  						<datalist id="origines">
  							<option data-ng-repeat="origine in origines | orderBy:'origineName'" value="{{origine.origineName}}">
-				 		</datalist>
-			   		
-			   	</td> 
-			   		
+				 	</datalist>
+
+			   	</td>
+
 			   	<td></td>
 			   	<td width="5%"><button class="btn  btn-info" ng-click="deleteOrigine(originText)"  style="font-size: 75%;">X</button></td>
 			    </tr>
 			   <tr>
-			   		<td height="10"> 
-			   				 <button class="btn  btn-primary" ng-click="addNewOrigine(originText)" style="font-size: 75%;">Add</button>
+			   		<td height="10">
+			   				<button class="btn  btn-primary" ng-click="addNewOrigine(originText)" style="font-size: 75%;">Add</button>
+			   				<section ng-app="riskApp" ng-controller="entityCtrl">
+    						<addbuttonsbutton></addbuttonsbutton>
+    						<div id="space-for-buttons">
+    						</section>
+   							</section>
 			   		</td>
 			   		<td></td>
-			   		<td></td> 
-			   		<td></td> 
+			   		<td></td>
+			   		<td></td>
 			   </tr>
            	   <tr style="background-color: DarkGray;">
                 	<td width="50%">
                 		<label style="font-size: 90%;">Booking Entities</label>
                 	</td>
                 	<td></td>
-                	<td></td> 
+                	<td></td>
            	   </tr>
-				        	   
+
            	   <tr style="height:10px;">
            	   	<td width="50%">
            	   	   <input list="entities" size="50">
@@ -120,27 +171,46 @@
 			   	</td>
 			   	<td><input size="3">%</input></td>
 			   	<td width="5%"><button class="btn  btn-info" style="font-size: 75%;">X</button></td>
-			   	<td></td> 
+			   	<td></td>
 			   </tr>
 			   <tr>
-			   		<td> 
+			   		<td>
 			   			<button class="btn  btn-primary" style="font-size: 75%;">Add</button>
-			   		</td> 
+			   		</td>
 			   		<td></td>
 			   		<td></td>
-			   		<td></td> 
+			   		<td></td>
 			   </tr>
-           	   
+
         </table>
-        
+
       </div>
         <div>
          <span>
          <button class="btn  btn-primary">Duplicate Table</button>&nbsp; &nbsp; &nbsp;
-         <button class="btn  btn-primary">Delete Table</button> 
-         </span> 
-        </div>        		  
+         <button class="btn  btn-primary">Delete Table</button>
+         </span>
+        </div>
  </div>
+
+
+ <form name="userForm" novalidate>
+<!--
+  <div class="form-group" ng-repeat="entity in entities">
+    <label>{{ entity.entityName }}'s Email</label>
+    <input list="origines" class="form-control" name="email" ng-model="user.email" required>
+    <p class="help-block" ng-show="userForm.email.$invalid">Valid Email Address Required</p>
+  </div>
+-->
+</form>
+
+<!--
+<section ng-app="riskApp" ng-controller="entityCtrl">
+    <addbuttonsbutton></addbuttonsbutton>
+    <div id="space-for-buttons">
+    </section>
+    </section>
+-->
 
 </body>
 </html>
