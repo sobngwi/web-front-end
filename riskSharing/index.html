@@ -1,0 +1,220 @@
+    <!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" ng-app="riskApp">
+    <head>
+      <title>Entities And Risks Sharing</title>
+      <script src="angular.js"></script>
+      <script src="angular-route.js"></script>
+      <link href="bootstrap.css" rel="stylesheet" />
+      <link href="bootstrap-theme.css" rel="stylesheet"/>
+      <script src="riskFactory.js"></script>
+      <script src="riskDirectives.js"></script>
+      <script src="riskControllers.js"></script>
+      <script src="app.js"></script>
+    </head>
+    <body <div ng-controller="entitiesCtrl">
+     <div>
+       <h3>Entities</h3>
+     </div>
+
+     <div class="panel">
+
+      <table class="table table table-bordered">
+        <thead>
+          <tr style="background-color: LightGray;">
+           <th style="font-size: 100%;height:10; ">Entities Name</th>
+           <th>Percentage</th>
+           <th> </th>
+           <th>Levels</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr style="background-color: DarkGray;">
+           <td width="50%">
+            <label style="font-size: 90%;">Place of Origination</label>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr data-ng-repeat="origine  in origineRow">
+          <td width="50%">
+           <select style="width:20em ;" ng-options="origine.origineName as origine.origineName for origine  in origines " ng-model="ori" ng-change="changeOrigine(ori)">
+            <option value="">{{defaultOrigineText}}</option>
+          </select>
+         </td>
+        <td></td>
+        <td>[ <a href="" ng-click="removeOrigine(origine)">X</a> ]</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td height="10">
+          <button class="btn  btn-primary" ng-click="cloneOrigine()" style="font-size: 75%;">Add</button>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr style="background-color: DarkGray;">
+       <td width="50%">
+        <label style="font-size: 90%;">Booking Entities</label>
+       </td>
+       <td></td>
+       <td></td>
+      </tr>
+
+     <tr data-ng-repeat="entity  in entitiesRow " style="height:10px;">
+      <td width="50%">
+       <select style="width:20em ;" ng-options="entity.entityName as entity.entityName for entity  in entities " ng-model="ent" ng-change="changeEntity(ent)">
+        <option style="display:none" value="" selected="selected" >{{defaultEntityText}}</option>
+       </select>
+      </td>
+      <td><input size="3">%</input></td>
+      <td>[ <a href="" ng-click="deleteRow($index)">X</a> ]</td>
+      <td><a class="btn" href="#" tooltip="Delete" ng-click="deleteRow($index);">
+    </a>{{$index}}</td>
+    </tr>
+    <tr>
+      <td>
+        <button ng-click="cloneEntity()" class="btn  btn-primary" style="font-size: 75%;">Add</button>
+      </td>
+      <td>
+      </td>
+      <td></td>
+      <td></td>
+    </tr>
+
+  </tbody>
+  </table>
+
+  </div>
+
+ <span>
+   <button class="btn  btn-primary" data-ng-click="duplicateTable()">Duplicate Table</button>&nbsp; &nbsp; &nbsp;
+   <button button data-ng-click="removeTable()" class="btn  btn-primary">Delete Table</button>
+ </span>
+
+    <div class="panel" style = "heigth :5%">
+
+    </div>                                  <!--End class panel . -->
+    <div  style = "heigth :5%">
+      <h3>Risk Sharing</h3>
+    </div>
+    <table class="table table table-bordered">
+        <thead>
+          <tr style="background-color: LightGray;">
+           <th>Participation Name</th>
+           <th>Participation Type</th>
+           <th>Internal SG</th>
+           <th>Risk And Treasury</th>
+           <th>Risk Only</th>
+           <th>Levels</th>
+         </tr>
+       </thead>
+       <tbody>
+
+          <tr style="background-color: DarkGray;">
+            <td> Business Line Participation </td>
+          </tr>
+          <tr data-ng-repeat="bl  in blRow">
+            <td width="15%">
+              <select style="width:20em ;" ng-options="bl.blName as bl.blName for bl  in bls " ng-model="selectBl">
+                <option value="">{{defaultBl.blName}}</option>
+              </select>
+            </td>
+            <td width="15%">
+                Risk and Treasury
+            </td>
+            <td width="15%">
+              25 %
+            </td>
+            <td width="15%">
+              34.80 %
+            </td>
+            <td width="15%">
+              [ <a href="" ng-click="removeBl(bl)">X</a> ]
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td height="10">
+              <button class="btn  btn-primary" ng-click="cloneBl()" style="font-size: 75%;">Add</button>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr style="background-color: DarkGray;">
+            <td> BDDF Participation </td>
+        </tr>
+        <tr data-ng-repeat="bddf  in bddfRow">
+            <td width="15%">
+              <select style="width:20em ;" ng-options="bddf.bddfName as bddf.bddfName for bddf  in bddfs " ng-model="selectBddf">
+                <option value="">{{defaultBddf.bddfName}}</option>
+              </select>
+            </td>
+            <td width="15%">
+                Risk and Treasury
+            </td>
+            <td width="15%">
+              <input size="3">%</input>
+            </td>
+            <td width="15%">
+              26.70 %
+            </td>
+            <td width="15%">
+              [ <a href="" ng-click="removeBddf(bddf)">X</a> ]
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td height="10">
+              <button class="btn  btn-primary" ng-click="cloneBddf()" style="font-size: 75%;">Add</button>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr style="background-color: DarkGray;">
+            <td> Other Participation </td>
+        </tr>
+        <tr data-ng-repeat="other  in otherRow">
+            <td width="15%">
+              <select style="width:20em ;" ng-options="other.otherName as other.otherName for other  in others " ng-model="selectOther">
+                <option value="">{{defaultOther.otherName}}</option>
+              </select>
+            </td>
+            <td width="15%">
+                Risk and Treasury
+            </td>
+            <td width="15%">
+              <input size="3">%</input>
+            </td>
+            <td width="15%">
+              26.70 %
+            </td>
+            <td width="15%">
+              [ <a href="" ng-click="removeOther(other)">X</a> ]
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+          <td height="10">
+            <button class="btn  btn-primary" ng-click="cloneOther()" style="font-size: 75%;">Add</button>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          </tr>
+
+       </tbody>
+
+
+</body>
+
+</html>
